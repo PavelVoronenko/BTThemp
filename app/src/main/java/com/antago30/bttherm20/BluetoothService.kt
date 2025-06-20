@@ -77,7 +77,7 @@ class BluetoothService(private val context: Context) {
             }
         }.start()
     }
-
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private fun startListening() {
         val inputStream = bluetoothSocket?.inputStream ?: return
         listenThread = Thread {
@@ -92,12 +92,14 @@ class BluetoothService(private val context: Context) {
                     // Потеря соединения
                     handler.post {
                         textViewData.text = "Error"
-                        //Toast.makeText(context, "Соединение потеряно", Toast.LENGTH_SHORT).show()
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            Toast.makeText(context, "Попытка повторного соединения", Toast.LENGTH_SHORT).show()
+                            connectToDevice(lastDevice)
+                        }, 5000)
                     }
                     break
                 }
             }
-
         }.apply { start() }
     }
 }
