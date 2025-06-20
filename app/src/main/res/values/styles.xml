@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Тема без ActionBar, чтобы использовать Toolbar -->
+
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">#00BCD4</item>
+        <item name="colorAccent">#FFC107</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
