@@ -23,6 +23,7 @@ class BluetoothService(private val context: Context) {
     private lateinit var textViewData: TextView
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var lastDevice: BluetoothDevice
+    private var isReconnecting = false
 
     fun isBluetoothEnabled() = bluetoothAdapter.isEnabled
 
@@ -38,6 +39,7 @@ class BluetoothService(private val context: Context) {
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun reconnect(bluetoothService: BluetoothService) {
         try {
+            disconnect()
             bluetoothService.connectToDevice(lastDevice)
             handler.post {
                 Toast.makeText(context, "Повторное подключение", Toast.LENGTH_LONG).show()
@@ -69,6 +71,7 @@ class BluetoothService(private val context: Context) {
                 socket.connect()
                 bluetoothSocket = socket
                 startListening()
+                if(socket.isConnected) isReconnecting = false
             } catch (e: IOException) {
                 // Обработка ошибок
                 handler.post {
@@ -84,25 +87,29 @@ class BluetoothService(private val context: Context) {
             val buffer = ByteArray(1024)
             while (!Thread.currentThread().isInterrupted) {
                 try {
-
+                    //isReconnecting = false
                     val bytesRead = inputStream.read(buffer)
                     if (bytesRead > 2){
-                        val data = String(buffer, 0, bytesRead).replace(Regex("[\\n\\r^@ ]"), "")
+                        val data = String(buffer, 0, bytesRead).replace(Regex("[\n\r^@\\s ]"), "").trim()
                         dataListener?.invoke(data)
                     }
-                    val data = String(buffer, 0, bytesRead)
-                    dataListener?.invoke(data)
                 } catch (e: IOException) {
+                    disconnect()
                     // Потеря соединения
-                    handler.post {
-                        textViewData.text = "Error"
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            disconnect()
-                            Toast.makeText(context, "Попытка повторного соединения", Toast.LENGTH_SHORT).show()
-                            connectToDevice(lastDevice)
-                        }, 5000)
+                    if (!isReconnecting) {
+                        isReconnecting = true
+
+                        handler.post {
+                            textViewData.text = "Error"
+                            Handler(Looper.getMainLooper()).postDelayed({
+
+                                Toast.makeText(context, "Попытка повторного соединения", Toast.LENGTH_SHORT).show()
+                                connectToDevice(lastDevice)
+                            }, 5000)
+                        }
+
+                        break
                     }
-                    break
                 }
             }
         }.apply { start() }

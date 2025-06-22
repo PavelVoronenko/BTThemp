@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_select_device"
-        android:icon="@drawable/list"
+        android:icon="@drawable/outline_checklist_rtl_24"
         android:orderInCategory="200"
-        android:title="list"
+        android:title="@string/list"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_reconnect"
-        android:icon="@drawable/bluetooth"
+        android:icon="@drawable/outline_bluetooth_connected_24"
         android:orderInCategory="100"
-        android:title="connect"
+        android:title="@string/connect"
         app:showAsAction="ifRoom" />
 </menu>
