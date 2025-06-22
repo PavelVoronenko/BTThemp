@@ -21,9 +21,11 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
             android:exported="true"
-            tools:ignore="DiscouragedApi">
+            tools:ignore="DiscouragedApi"
+            tools:targetApi="35">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

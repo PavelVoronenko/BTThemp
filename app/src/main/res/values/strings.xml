@@ -2,4 +2,5 @@
     <string name="app_name">BT Therm</string>
     <string name="list">list</string>
     <string name="connect">connect</string>
+    <string name="hello">hello</string>
 </resources>

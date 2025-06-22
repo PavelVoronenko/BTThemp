@@ -5,4 +5,5 @@
     <color name="main">#00FFFFFF</color>
     <color name="background">#F5F5FCFE</color>
     <color name="menu">#FE0C11A8</color>
+    <color name="statusBar">#161515</color>
 </resources>
