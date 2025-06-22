@@ -86,6 +86,10 @@ class BluetoothService(private val context: Context) {
                 try {
 
                     val bytesRead = inputStream.read(buffer)
+                    if (bytesRead > 2){
+                        val data = String(buffer, 0, bytesRead).replace(Regex("[\\n\\r^@ ]"), "")
+                        dataListener?.invoke(data)
+                    }
                     val data = String(buffer, 0, bytesRead)
                     dataListener?.invoke(data)
                 } catch (e: IOException) {
@@ -93,6 +97,7 @@ class BluetoothService(private val context: Context) {
                     handler.post {
                         textViewData.text = "Error"
                         Handler(Looper.getMainLooper()).postDelayed({
+                            disconnect()
                             Toast.makeText(context, "Попытка повторного соединения", Toast.LENGTH_SHORT).show()
                             connectToDevice(lastDevice)
                         }, 5000)

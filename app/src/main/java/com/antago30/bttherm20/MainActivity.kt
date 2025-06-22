@@ -3,6 +3,7 @@ package com.antago30.bttherm20
 import android.Manifest
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bluetoothService: BluetoothService
     private val REQUEST_CODE_BLUETOOTH_PERMISSIONS = 1002
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             runOnUiThread {
                 imRxStatus.visibility = View.VISIBLE
                 blinkImageView(imRxStatus)
-                textViewData.text = data
+                textViewData.text = "$data°C"
             }
         }
 
