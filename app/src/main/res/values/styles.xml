@@ -2,7 +2,7 @@
 <resources>
     <!-- Тема без ActionBar, чтобы использовать Toolbar -->
 
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">#0000BCD4</item>
         <item name="colorAccent">#FFC107</item>
 
