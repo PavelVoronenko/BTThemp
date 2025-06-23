@@ -2,7 +2,7 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#181818</item>
+        <item name="colorPrimary">@color/menu</item>
         <item name="colorAccent">#FFC107</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>

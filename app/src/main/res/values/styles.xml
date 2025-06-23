@@ -5,6 +5,7 @@
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">#0000BCD4</item>
         <item name="colorAccent">#FFC107</item>
-
+        <item name="android:statusBarColor">@color/menu</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
