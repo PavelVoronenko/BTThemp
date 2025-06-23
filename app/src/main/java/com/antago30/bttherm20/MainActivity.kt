@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        //enableEdgeToEdge()
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -82,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_reconnect -> {
-                bluetoothService.reconnect(bluetoothService)
+                bluetoothService.reconnect()
                 return true
             }
         }

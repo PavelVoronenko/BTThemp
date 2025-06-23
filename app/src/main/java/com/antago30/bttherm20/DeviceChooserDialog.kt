@@ -29,6 +29,7 @@ class DeviceChooserDialog(
             .setItems(deviceNames) { _, which ->
                 devices.elementAtOrNull(which)?.let {
                     Toast.makeText(context, "Подключение к ${it.name}", Toast.LENGTH_SHORT).show()
+                    bluetoothService.disconnect()
                     bluetoothService.connectToDevice(it)
                     bluetoothService.setLastDevice(it.address)
                 }

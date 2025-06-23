@@ -37,10 +37,10 @@ class BluetoothService(private val context: Context) {
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    fun reconnect(bluetoothService: BluetoothService) {
+    fun reconnect() {
+        disconnect()
         try {
-            disconnect()
-            bluetoothService.connectToDevice(lastDevice)
+            connectToDevice(lastDevice)
             handler.post {
                 Toast.makeText(context, "Повторное подключение", Toast.LENGTH_LONG).show()
             }
@@ -54,15 +54,17 @@ class BluetoothService(private val context: Context) {
     fun disconnect() {
         try {
             bluetoothSocket?.close()
+
         } catch (e: IOException) {
             // Игнор
         }
         bluetoothSocket = null
         listenThread?.interrupt()
     }
+
     @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_CONNECT)
     fun connectToDevice(device: BluetoothDevice) {
-        disconnect()
+        isReconnecting = false
         Thread  {
             try {
                 val uuid = device.uuids?.firstOrNull()?.uuid
@@ -71,15 +73,14 @@ class BluetoothService(private val context: Context) {
                 socket.connect()
                 bluetoothSocket = socket
                 startListening()
-                if(socket.isConnected) isReconnecting = false
             } catch (e: IOException) {
-                // Обработка ошибок
                 handler.post {
                     Toast.makeText(context, "Устройство не найдено", Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
     }
+
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private fun startListening() {
         val inputStream = bluetoothSocket?.inputStream ?: return
@@ -87,32 +88,35 @@ class BluetoothService(private val context: Context) {
             val buffer = ByteArray(1024)
             while (!Thread.currentThread().isInterrupted) {
                 try {
-                    //isReconnecting = false
                     val bytesRead = inputStream.read(buffer)
                     if (bytesRead > 2){
+                        isReconnecting = true
                         val data = String(buffer, 0, bytesRead).replace(Regex("[\n\r^@\\s ]"), "").trim()
                         dataListener?.invoke(data)
                     }
                 } catch (e: IOException) {
                     disconnect()
-                    // Потеря соединения
-                    if (!isReconnecting) {
-                        isReconnecting = true
-
-                        handler.post {
-                            textViewData.text = "Error"
-                            Handler(Looper.getMainLooper()).postDelayed({
-
-                                Toast.makeText(context, "Попытка повторного соединения", Toast.LENGTH_SHORT).show()
-                                connectToDevice(lastDevice)
-                            }, 5000)
-                        }
-
-                        break
-                    }
+                    attemptReconnect()
+                    break
                 }
             }
         }.apply { start() }
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private fun attemptReconnect() {
+        handler.post {
+            textViewData.text = "Error"
+        }
+
+        if (!isReconnecting) return
+        isReconnecting = false
+
+        handler.postDelayed({
+            Toast.makeText(context, "Попытка повторного соединения", Toast.LENGTH_SHORT).show()
+            connectToDevice(lastDevice)
+        }, 3000)
+
     }
 }
 
