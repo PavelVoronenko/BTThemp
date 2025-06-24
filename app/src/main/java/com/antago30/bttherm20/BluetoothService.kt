@@ -91,7 +91,8 @@ class BluetoothService(private val context: Context) {
                     val bytesRead = inputStream.read(buffer)
                     if (bytesRead > 2){
                         isReconnecting = true
-                        val data = String(buffer, 0, bytesRead).replace(Regex("[\n\r^@\\s ]"), "").trim()
+                        val data = String(buffer, 0, bytesRead).replace(Regex("[\n\r^@\\s ]"), "")
+                            .replace(Regex("[-–−—]"),"–").trim()
                         dataListener?.invoke(data)
                     }
                 } catch (e: IOException) {
